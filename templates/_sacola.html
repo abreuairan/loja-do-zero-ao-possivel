@@ -1,0 +1,43 @@
+{# SACOLA (🛍 no canto superior direito + painel que abre pela direita).
+   Os itens ficam guardados no navegador do cliente (localStorage), então a sacola
+   continua cheia enquanto ele lê sobre o livro e o autor.
+   Os "data-..." passam ao JavaScript as informações do livro (o preço aqui é só
+   para MOSTRAR: quem decide o valor cobrado é sempre o servidor). #}
+<button type="button" class="sacola-botao" id="sacolaBotao" aria-label="Abrir sacola" aria-expanded="false" aria-controls="sacola">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <path d="M6 8h12l-1 12.2a1 1 0 0 1-1 .8H8a1 1 0 0 1-1-.8L6 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M9 10V6.5a3 3 0 0 1 6 0V10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="sacola-contador" id="sacolaContador" hidden>0</span>
+</button>
+
+<div class="sacola-fundo" id="sacolaFundo"></div>
+
+<aside class="sacola" id="sacola" aria-label="Sua sacola"
+       data-titulo="{{ livro.titulo }}"
+       data-formato="{{ livro.formato }}"
+       data-preco="{{ preco_livro }}"
+       data-max="{{ qtd_maxima }}"
+       data-foto="{{ url_for('static', filename=foto_livro) if foto_livro else '' }}">
+    <div class="sacola-topo">
+        <span class="sacola-titulo">Sua sacola</span>
+        <button type="button" class="sacola-fechar" id="sacolaFechar" aria-label="Fechar sacola">&times;</button>
+    </div>
+
+    {# os itens são desenhados pelo sacola.js #}
+    <div class="sacola-itens" id="sacolaItens" aria-live="polite"></div>
+
+    <div class="sacola-vazia" id="sacolaVazia" hidden>
+        <p>Sua sacola está vazia.</p>
+        <button type="button" class="btn-contorno" id="sacolaExplorar">Continuar explorando</button>
+    </div>
+
+    <div class="sacola-rodape" id="sacolaRodape" hidden>
+        <dl class="sacola-conta">
+            <div><dt>Subtotal</dt><dd id="sacolaSubtotal"></dd></div>
+            <div class="sacola-frete-linha"><dt>Frete</dt><dd>calculado na próxima etapa</dd></div>
+        </dl>
+        <a class="btn-pilula btn-largo" id="sacolaFinalizar" href="{{ url_for('finalizar') }}">Finalizar compra <span class="seta" aria-hidden="true">&rarr;</span></a>
+        <button type="button" class="sacola-continuar" id="sacolaContinuar">Continuar explorando a loja</button>
+    </div>
+</aside>

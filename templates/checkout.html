@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar compra | {{ livro.titulo }}</title>
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    {# loja.css traz as cores, os botões e os campos; checkout.css, o visual das etapas #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='loja.css') }}?v=1.6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='checkout.css') }}?v=1.0">
+</head>
+<body class="pagina-checkout">
+
+    <header class="ck-topo">
+        <a class="ck-voltar" href="{{ url_for('loja') }}"><span aria-hidden="true">&larr;</span> Voltar à loja</a>
+        <span class="ck-marca">{{ livro.titulo }}</span>
+    </header>
+
+    {# os "data-..." passam ao checkout.js o que ele precisa (o preço aqui é só para MOSTRAR) #}
+    <main class="ck" id="checkout"
+          data-titulo="{{ livro.titulo }}"
+          data-formato="{{ livro.formato }}"
+          data-preco="{{ preco_livro }}"
+          data-max="{{ qtd_maxima }}"
+          data-foto="{{ url_for('static', filename=foto_livro) if foto_livro else '' }}"
+          data-url-frete="{{ url_for('frete') }}"
+          data-url-pedido="{{ url_for('pedido') }}"
+          data-url-pix="{{ url_for('pix_situacao') }}"
+          data-online="{{ 'sim' if pagamento_online else 'nao' }}"
+          data-falhou="{{ 'sim' if request.args.get('pagamento') == 'falhou' else 'nao' }}">
+
+        <h1 class="ck-titulo">Finalizar compra</h1>
+
+        {# barrinha de progresso: 1 → 2 → 3 #}
+        <ol class="ck-passos" id="ckPassos">
+            <li data-passo="1" class="atual"><span>1</span> Dados de envio</li>
+            <li data-passo="2"><span>2</span> Forma de envio</li>
+            <li data-passo="3"><span>3</span> Pagamento</li>
+        </ol>
+
+        <div class="ck-vazio" id="ckVazio" hidden>
+            <p>Sua sacola está vazia.</p>
+            <a class="btn-pilula" href="{{ url_for('loja') }}#comprar">Voltar à loja</a>
+        </div>
+
+        <div class="ck-grade" id="ckGrade">
+            <div class="ck-etapas">
+
+                <!-- ETAPA 1: DADOS DE ENVIO -->
+                <section class="ck-etapa aberta" id="etapa1" aria-labelledby="t1">
+                    <div class="ck-etapa-topo">
+                        <span class="ck-num">1</span>
+                        <h2 id="t1">Dados de envio</h2>
+                        <button type="button" class="ck-editar" data-editar="1" hidden>Editar</button>
+                    </div>
+                    <p class="ck-etapa-resumo" id="resumo1" hidden></p>
+                    <form class="ck-corpo" id="formEnvio" novalidate>
+                        <div class="entrega-grade">
+                            <input class="larga" name="nome" type="text" placeholder="Nome completo" autocomplete="name" aria-label="Nome completo" required>
+                            <input class="larga" name="email" type="email" placeholder="E-mail" autocomplete="email" aria-label="E-mail" required>
+                            <input class="larga" name="telefone" type="tel" placeholder="WhatsApp com DDD" autocomplete="tel" inputmode="tel" aria-label="WhatsApp com DDD" required>
+                            <input name="cep" id="ckCep" type="text" placeholder="CEP" inputmode="numeric" autocomplete="postal-code" maxlength="9" aria-label="CEP de entrega" required>
+                            <input name="numero" type="text" placeholder="Número" autocomplete="off" aria-label="Número" required>
+                            <input class="larga" name="rua" type="text" placeholder="Rua / Avenida" autocomplete="address-line1" aria-label="Rua ou avenida" required>
+                            <input class="larga" name="complemento" type="text" placeholder="Complemento (opcional)" autocomplete="address-line2" aria-label="Complemento (opcional)">
+                            <input class="larga" name="bairro" type="text" placeholder="Bairro" autocomplete="address-level3" aria-label="Bairro" required>
+                            <input name="cidade" type="text" placeholder="Cidade" autocomplete="address-level2" aria-label="Cidade" required>
+                            <input name="uf" type="text" placeholder="UF" maxlength="2" autocomplete="address-level1" aria-label="Estado (sigla)" required>
+                        </div>
+                        <p class="entrega-lgpd">Usamos estes dados apenas para entregar o seu pedido.</p>
+                        <p class="cupom-msg" id="msg1" role="status" aria-live="polite"></p>
+                        <button type="submit" class="btn-pilula btn-largo">Continuar <span class="seta" aria-hidden="true">&rarr;</span></button>
+                    </form>
+                </section>
+
+                <!-- ETAPA 2: FORMA DE ENVIO (PAC ou SEDEX, para o CEP da etapa 1) -->
+                <section class="ck-etapa" id="etapa2" aria-labelledby="t2">
+                    <div class="ck-etapa-topo">
+                        <span class="ck-num">2</span>
+                        <h2 id="t2">Forma de envio</h2>
+                        <button type="button" class="ck-editar" data-editar="2" hidden>Editar</button>
+                    </div>
+                    <p class="ck-etapa-resumo" id="resumo2" hidden></p>
+                    <div class="ck-corpo" hidden>
+                        <p class="frete-msg" id="msg2" role="status" aria-live="polite"></p>
+                        <div class="frete-opcoes" id="opcoesFrete" role="radiogroup" aria-label="Formas de envio"></div>
+                        <button type="button" class="btn-pilula btn-largo" id="continuar2" disabled>Continuar <span class="seta" aria-hidden="true">&rarr;</span></button>
+                    </div>
+                </section>
+
+                <!-- ETAPA 3: PAGAMENTO -->
+                <section class="ck-etapa" id="etapa3" aria-labelledby="t3">
+                    <div class="ck-etapa-topo">
+                        <span class="ck-num">3</span>
+                        <h2 id="t3">Pagamento</h2>
+                    </div>
+                    <div class="ck-corpo" hidden>
+                        <div class="ck-formas" id="ckFormas" role="radiogroup" aria-label="Forma de pagamento">
+                            <label class="ck-forma">
+                                <input type="radio" name="forma" value="pix" checked>
+                                <span class="ck-forma-icone" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2.5 21.5 12 12 21.5 2.5 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 12 12 8.5 15.5 12 12 15.5z" fill="currentColor"/></svg>
+                                </span>
+                                <span class="ck-forma-texto"><strong>Pix</strong><small>QR Code ou copia e cola &middot; aprovação na hora</small></span>
+                            </label>
+                            <label class="ck-forma">
+                                <input type="radio" name="forma" value="cartao">
+                                <span class="ck-forma-icone" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" width="26" height="26"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 9.5h19M6 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                </span>
+                                <span class="ck-forma-texto"><strong>Cartão de crédito</strong><small>Você preenche o cartão na página segura do Mercado Pago</small></span>
+                            </label>
+                        </div>
+                        <p class="cupom-msg" id="msg3" role="status" aria-live="polite"></p>
+                        <button type="button" class="btn-pilula btn-largo" id="finalizar">Finalizar pagamento <span class="seta" aria-hidden="true">&rarr;</span></button>
+
+                        {# tela do Pix: aparece depois de "Finalizar pagamento" com Pix escolhido #}
+                        <div class="ck-pix" id="ckPix" hidden>
+                            <p class="ck-pix-titulo">Pague com Pix</p>
+                            <ol class="ck-pix-passos">
+                                <li>Abra o app do seu banco e escolha <strong>Pix</strong>.</li>
+                                <li>Escaneie o QR Code <span class="so-pc">abaixo</span> ou use o <strong>copia e cola</strong>.</li>
+                                <li>Confirme o valor de <strong id="pixValor"></strong>.</li>
+                            </ol>
+                            <img class="ck-pix-qr" id="pixQr" alt="QR Code do Pix" width="220" height="220">
+                            <label class="frete-rotulo" for="pixCodigo">Pix copia e cola</label>
+                            <div class="ck-pix-copiar">
+                                <input id="pixCodigo" type="text" readonly>
+                                <button type="button" class="btn-frete" id="pixCopiar">Copiar</button>
+                            </div>
+                            <p class="ck-pix-espera" id="pixEspera" role="status" aria-live="polite"><span class="ck-pontinho" aria-hidden="true"></span> Aguardando o pagamento&hellip; o código vale por <strong id="pixTempo"></strong></p>
+                        </div>
+
+                        {# pagamento aprovado #}
+                        <div class="ck-sucesso" id="ckSucesso" hidden tabindex="-1">
+                            <span class="ck-sucesso-icone" aria-hidden="true">&#10003;</span>
+                            <p class="ck-pix-titulo">Pagamento aprovado!</p>
+                            <p>Obrigado pela compra. O pedido <strong id="sucessoPedido"></strong> foi confirmado e você vai receber a confirmação por e-mail.</p>
+                            <a class="btn-contorno" href="{{ url_for('loja') }}">Voltar à loja</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- RESUMO DO PEDIDO (fica ao lado no PC e em cima no celular) -->
+            <aside class="ck-resumo" aria-label="Resumo do pedido">
+                <p class="ck-resumo-titulo">Resumo do pedido</p>
+                <div id="resumoItens"></div>
+                <dl class="frete-total">
+                    <div><dt>Subtotal</dt><dd id="resSubtotal"></dd></div>
+                    <div><dt>Frete</dt><dd id="resFrete">a calcular</dd></div>
+                    <div class="frete-soma"><dt>Total</dt><dd id="resTotal"></dd></div>
+                </dl>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="rodape">
+        <p>&copy; {{ ano }} {{ autor.nome }} &middot; {{ livro.titulo }} &middot; Editora {{ livro.editora }}</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='sacola.js') }}?v=1.0" defer></script>
+    <script src="{{ url_for('static', filename='checkout.js') }}?v=1.0" defer></script>
+</body>
+</html>

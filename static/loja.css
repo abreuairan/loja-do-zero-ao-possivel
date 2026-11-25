@@ -1,0 +1,596 @@
+/* ============================================================
+   LOJA DO LIVRO - estilos
+   Mesma linguagem visual do site do questionário:
+   amarelo da marca, botões em pílula, fundo de conexões.
+   Para trocar cores, mexa nas variáveis logo abaixo.
+   ============================================================ */
+
+:root {
+    --amarelo: #F2CD5C;
+    --amarelo-claro: #F7DE8E;
+    --amarelo-escuro: #E9BF47;
+    --tinta: #0D0D0D;
+    --suave: #4A473D;
+    --creme: #FBF4DC;
+    --cartao: #FFFDF6;
+    --borda: #DDD5BA;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    background: var(--creme);
+    color: var(--tinta);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* a barra de compra do celular não pode tapar o rodapé */
+@media (max-width: 720px) { body { padding-bottom: 76px; } }
+
+/* ---------- botões ---------- */
+.btn-pilula, .btn-contorno {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 0 32px;
+    border-radius: 999px;
+    border: 2px solid var(--tinta);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 0.86rem;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.btn-pilula { background: var(--tinta); color: var(--amarelo); box-shadow: 0 8px 20px rgba(13, 13, 13, 0.2); }
+.btn-contorno { background: transparent; color: var(--tinta); }
+.btn-amarelo { background: var(--amarelo); color: var(--tinta); border-color: var(--amarelo); box-shadow: none; }
+.btn-largo { width: 100%; }
+.seta { display: inline-block; transition: transform 0.2s ease; }
+
+.btn-pilula:active, .btn-contorno:active { transform: scale(0.96); }
+.btn-pilula:focus-visible, .btn-contorno:focus-visible { outline: 3px solid var(--tinta); outline-offset: 4px; }
+.secao-escura .btn-pilula:focus-visible { outline-color: var(--amarelo); }
+
+.btn-desativado { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.btn-desativado:active { transform: none; }
+
+/* hover só em telas com mouse (no toque ele "gruda") */
+@media (hover: hover) {
+    .btn-pilula:hover { background: #ffffff; color: var(--tinta); }
+    .btn-amarelo:hover { background: #ffffff; border-color: #ffffff; }
+    .btn-contorno:hover { background: var(--tinta); color: var(--amarelo); }
+    .btn-pilula:hover .seta { transform: translateX(4px); }
+    .btn-desativado:hover { background: var(--tinta); color: var(--amarelo); }
+}
+
+/* ---------- capa ---------- */
+.capa {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 84px 24px 96px;
+    overflow: hidden;
+    text-align: center;
+    background:
+        radial-gradient(circle at 88% 10%, var(--amarelo-claro) 0 120px, transparent 121px),
+        radial-gradient(circle at 6% 92%, var(--amarelo-escuro) 0 170px, transparent 171px),
+        var(--amarelo);
+}
+.capa-conteudo { position: relative; z-index: 1; max-width: 640px; display: flex; flex-direction: column; align-items: center; }
+
+/* imagem da capa do livro (a real ou a provisória) */
+.capa-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;                              /* formato da foto do livro */
+    object-fit: cover;
+    border-radius: 22px;
+    box-shadow: 0 22px 44px rgba(13, 13, 13, 0.28);
+}
+.capa-hero { width: min(54vw, 215px); margin: 0 0 26px; }
+
+.capa-provisoria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(160deg, var(--amarelo-claro), var(--amarelo) 55%, var(--amarelo-escuro));
+    border: 2px solid var(--tinta);
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.capa-selo {
+    display: inline-block;
+    margin: 0 0 18px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--tinta);
+    color: var(--amarelo);
+    font-weight: 800;
+    font-size: 0.72rem;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+.capa-titulo {
+    margin: 0 0 16px;
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 9.5vw, 4.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+}
+.capa-frase {
+    margin: 0 0 30px;
+    font-family: 'Lora', serif;
+    font-size: clamp(1.05rem, 3.6vw, 1.3rem);
+    line-height: 1.5;
+}
+.capa-botoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+.capa-rolar {
+    position: absolute; left: 50%; bottom: 22px; z-index: 1;
+    width: 28px; height: 46px; margin-left: -14px;
+    border: 2px solid var(--tinta); border-radius: 999px; opacity: 0.7;
+}
+.capa-rolar span {
+    position: absolute; left: 50%; top: 8px; width: 4px; height: 10px; margin-left: -2px;
+    border-radius: 2px; background: var(--tinta);
+    animation: rolar 1.7s ease-in-out infinite;
+}
+@keyframes rolar {
+    0% { transform: translateY(0); opacity: 1; }
+    70% { transform: translateY(14px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 0; }
+}
+
+@keyframes subir { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.capa-conteudo > * { animation: subir 0.7s ease-out backwards; }
+.capa-conteudo > :nth-child(2) { animation-delay: 0.08s; }
+.capa-conteudo > :nth-child(3) { animation-delay: 0.16s; }
+.capa-conteudo > :nth-child(4) { animation-delay: 0.24s; }
+.capa-conteudo > :nth-child(5) { animation-delay: 0.32s; }
+
+/* PC: capa em duas colunas (texto à esquerda, foto do livro à direita) */
+@media (min-width: 900px) {
+    .capa-conteudo { max-width: 1040px; width: 100%; display: grid; grid-template-columns: 1.1fr 0.9fr; column-gap: 64px; align-items: center; text-align: left; justify-items: start; }
+    .capa-conteudo > .capa-img { grid-column: 2; grid-row: 1 / span 6; width: min(100%, 400px); margin: 0 0 0 auto; justify-self: center; }
+    .capa-conteudo > :not(.capa-img) { grid-column: 1; }
+    .capa-botoes { justify-content: flex-start; }
+}
+
+/* ---------- seções ---------- */
+.secao { padding: 76px 24px; }
+.secao-miolo { max-width: 880px; margin: 0 auto; }
+.secao-centro { text-align: center; }
+
+.secao-conexoes {
+    background-color: var(--creme);
+    background-image: url("fundo-conexoes.jpg");     /* o mesmo padrão do questionário */
+    background-size: 1100px auto;
+    background-repeat: repeat;
+}
+.secao-amarela { background: var(--amarelo); }
+.secao-escura { background: var(--tinta); color: #ffffff; }
+
+.rotulo {
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8A6A0E;
+}
+.rotulo-claro, .secao-amarela .rotulo { color: var(--amarelo); }
+.secao-amarela .rotulo { color: var(--tinta); }
+
+.realce { background: linear-gradient(transparent 58%, var(--amarelo) 58%); padding: 0 .1em; }
+.secao-amarela .realce { background: linear-gradient(transparent 58%, #ffffff 58%); }
+
+.secao-titulo {
+    margin: 0 0 20px;
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 5.5vw, 2.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+.texto {
+    margin: 0 0 16px;
+    font-family: 'Lora', serif;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    max-width: 62ch;
+}
+.secao-centro .texto { margin-left: auto; margin-right: auto; margin-bottom: 30px; }
+
+/* ---------- destaques ---------- */
+.destaques { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+.destaque {
+    padding: 24px 22px;
+    background: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 22px;
+    box-shadow: 6px 6px 0 #E0D9C0;
+}
+.destaque-num { display: block; margin-bottom: 10px; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.14em; color: #C8971A; }
+.destaque h3 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 800; }
+.destaque p { margin: 0; font-family: 'Lora', serif; font-size: 0.98rem; line-height: 1.55; color: var(--suave); }
+
+/* ---------- autor ---------- */
+.secao-autor { display: grid; grid-template-columns: 210px 1fr; gap: 40px; align-items: center; }
+.autor-foto {
+    display: block; width: 210px; height: 210px; border-radius: 50%;
+    object-fit: cover; border: 4px solid var(--tinta);
+    box-shadow: 10px 10px 0 var(--tinta);
+}
+.autor-provisoria {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--tinta); color: var(--amarelo);
+    font-family: 'Lora', serif; font-weight: 700; font-size: 4rem;
+}
+.btn-instagram { min-height: 48px; padding: 0 24px; margin-top: 8px; letter-spacing: 0.04em; text-transform: none; font-size: 0.9rem; }
+
+/* linha do tempo (sanfona) */
+.trajetoria { margin-top: 36px; background: rgba(255, 255, 255, 0.55); border-radius: 24px; overflow: hidden; }
+.trajetoria summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 60px; padding: 0 26px; cursor: pointer; list-style: none;
+    font-weight: 800; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+}
+.trajetoria summary::-webkit-details-marker { display: none; }
+.trajetoria summary:focus-visible { outline: 3px solid var(--tinta); outline-offset: -3px; border-radius: 24px; }
+.trajetoria[open] summary .seta { transform: rotate(180deg); }
+.linha-tempo { list-style: none; margin: 0; padding: 4px 26px 26px 26px; columns: 2; column-gap: 36px; }   /* lê-se de cima para baixo em cada coluna */
+.linha-tempo li { break-inside: avoid; position: relative; padding: 0 0 18px 22px; border-left: 3px solid var(--tinta); font-size: 0.9rem; line-height: 1.4; }
+.linha-tempo li::before { content: ''; position: absolute; left: -9px; top: 2px; width: 15px; height: 15px; border-radius: 50%; background: #ffffff; border: 3px solid var(--tinta); }
+.lt-periodo { display: block; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.08em; }
+.linha-tempo strong { display: block; font-size: 0.95rem; }
+.lt-onde { display: block; font-family: 'Lora', serif; color: #3b3a33; }
+
+/* ---------- compra ---------- */
+.compra {
+    display: grid; grid-template-columns: 340px 1fr; gap: 40px; align-items: center;
+    margin-top: 28px; padding: 32px;
+    background: var(--cartao); border: 1px solid var(--borda); border-radius: 28px;
+    box-shadow: 8px 8px 0 #E0D9C0;
+}
+.capa-compra { width: 240px; }
+.compra-info { min-width: 0; }
+.compra-info h3 { margin: 0 0 6px; font-family: 'Lora', serif; font-size: 1.6rem; }
+.compra-formato { margin: 0 0 14px; color: var(--suave); font-weight: 600; font-size: 0.9rem; }
+.compra-preco { margin: 0 0 22px; font-weight: 800; font-size: 2.2rem; letter-spacing: -0.02em; }
+.compra-nota { margin: 14px 0 0; font-size: 0.8rem; color: var(--suave); }
+
+/* ---------- frete ---------- */
+.frete { margin: 0 0 20px; text-align: left; }
+.frete-rotulo { display: block; margin: 0 0 8px; font-weight: 800; font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.frete-form { display: flex; gap: 8px; }
+.frete-form input {
+    flex: 1; min-width: 0; height: 52px; padding: 0 20px;
+    border: 1px solid #CFC7AA; border-radius: 999px; background: #ffffff;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem; color: var(--tinta);
+    letter-spacing: 0.04em;
+}
+.frete-form input::placeholder { color: #9A927A; font-weight: 500; letter-spacing: 0; }
+.frete-form input:focus { outline: none; border-color: var(--tinta); box-shadow: 0 0 0 4px var(--amarelo); }
+.frete-form input[aria-invalid="true"] { border-color: #c0392b; }
+.btn-frete {
+    height: 52px; padding: 0 24px; border: 2px solid var(--tinta); border-radius: 999px;
+    background: var(--amarelo); color: var(--tinta);
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+.btn-frete:active { transform: scale(0.96); }
+.btn-frete:disabled { opacity: 0.55; cursor: progress; transform: none; }
+.btn-frete:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
+@media (hover: hover) { .btn-frete:hover:not(:disabled) { background: var(--tinta); color: var(--amarelo); } }
+
+.frete-msg { min-height: 1.2em; margin: 8px 4px 0; font-size: 0.82rem; color: var(--suave); }
+.frete-msg.erro { color: #b03226; font-weight: 600; }
+
+.frete-opcoes { display: grid; gap: 8px; margin-top: 4px; }
+.frete-opcoes:empty { display: none; }
+.frete-opcao {
+    display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+    border: 1px solid #D8D0B4; border-radius: 18px; background: var(--cartao); cursor: pointer;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.12s ease;
+    animation: subir 0.35s ease-out backwards;
+}
+.frete-opcao:active { transform: scale(0.98); }
+.frete-opcao:has(input:checked) { border-color: var(--tinta); background: #FFF0BC; }
+.frete-opcao:has(input:focus-visible) { outline: 3px solid var(--amarelo); outline-offset: 2px; }
+.frete-opcao input {
+    -webkit-appearance: none; appearance: none; flex: 0 0 20px; width: 20px; height: 20px; margin: 0;
+    border: 2px solid #8C8570; border-radius: 50%; background: transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.frete-opcao input:checked { border-color: var(--tinta); background: var(--tinta); box-shadow: inset 0 0 0 3.5px #FFF0BC; }
+.frete-nome { flex: 1; font-weight: 700; font-size: 0.9rem; line-height: 1.25; }
+.frete-nome small { display: block; margin-top: 2px; font-weight: 500; font-size: 0.78rem; color: var(--suave); }
+.frete-valor { font-weight: 800; font-size: 0.95rem; white-space: nowrap; }
+@media (hover: hover) { .frete-opcao:hover { border-color: var(--tinta); } }
+
+.frete-total { margin: 14px 0 0; padding: 14px 18px; border-radius: 18px; background: rgba(255, 255, 255, 0.7); font-size: 0.9rem; }
+.frete-total div { display: flex; justify-content: space-between; padding: 3px 0; }
+.frete-total dt, .frete-total dd { margin: 0; }
+.frete-soma { margin-top: 6px; padding-top: 8px !important; border-top: 1px solid var(--borda); font-weight: 800; font-size: 1.05rem; }
+
+/* ---------- carrossel de fotos ---------- */
+.carrossel { position: relative; width: 340px; }
+.car-pista {
+    display: flex;
+    aspect-ratio: 3 / 4;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;       /* cada foto "encaixa" no centro */
+    scroll-behavior: smooth;             /* e o deslize é suave */
+    overscroll-behavior-x: contain;      /* não puxa a página para o lado */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 24px;
+    background: var(--amarelo-claro);
+    box-shadow: 0 22px 44px rgba(13, 13, 13, 0.25);
+}
+.car-pista::-webkit-scrollbar { display: none; }
+.car-pista:focus-visible { outline: 3px solid var(--tinta); outline-offset: 4px; }
+.car-slide { flex: 0 0 100%; margin: 0; scroll-snap-align: center; scroll-snap-stop: always; }
+.car-slide img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+
+.car-btn {
+    position: absolute; top: 50%; z-index: 2;
+    width: 44px; height: 44px; margin: -22px 0 0; padding: 0 0 4px;
+    border: 0; border-radius: 50%;
+    background: rgba(13, 13, 13, 0.62); color: var(--amarelo);
+    font-family: 'Montserrat', sans-serif; font-size: 1.9rem; line-height: 1; font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+.car-ant { left: 10px; }
+.car-prox { right: 10px; }
+.car-btn:active { transform: scale(0.9); }
+.car-btn:focus-visible { outline: 3px solid var(--amarelo); outline-offset: 2px; }
+@media (hover: hover) { .car-btn:hover { background: var(--tinta); } }
+
+.car-pontos { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+.car-pontos button {
+    width: 10px; height: 10px; padding: 0; border: 0; border-radius: 999px;
+    background: #cdbf8e; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+.car-pontos button::after { content: ''; display: block; margin: -12px; padding: 17px; }   /* área de toque maior */
+.car-pontos button[aria-current="true"] { width: 28px; background: var(--tinta); }
+.car-pontos button:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
+
+/* ---------- rodapé ---------- */
+.rodape { padding: 28px 24px; background: var(--tinta); color: #bdb8a6; text-align: center; font-size: 0.8rem; border-top: 1px solid #2a2a2a; }
+.rodape p { margin: 0; }
+
+/* ---------- barra de compra (celular) ---------- */
+.barra-compra {
+    position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 900;
+    display: none; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 8px 8px 8px 22px;
+    background: var(--tinta); color: #ffffff; border-radius: 999px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    transform: translateY(140%); visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
+}
+.barra-compra.aberta { transform: none; visibility: visible; transition: transform 0.3s ease; }
+.barra-preco { font-weight: 800; font-size: 1.05rem; }
+.btn-barra { min-height: 46px; padding: 0 24px; background: var(--amarelo); color: var(--tinta); border-color: var(--amarelo); box-shadow: none; }
+@media (max-width: 720px) { .barra-compra { display: flex; } }
+
+/* ---------- aparecer ao rolar ---------- */
+.js .revelar { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.js .revelar.visivel { opacity: 1; transform: none; }
+.js .destaque.revelar:nth-child(2) { transition-delay: 0.1s; }
+.js .destaque.revelar:nth-child(3) { transition-delay: 0.2s; }
+
+/* ---------- celular ---------- */
+@media (max-width: 720px) {
+    .secao { padding: 56px 20px; }
+    .secao-conexoes { background-size: 760px auto; }
+    .destaques { grid-template-columns: 1fr; }
+    .secao-autor { grid-template-columns: 1fr; text-align: center; gap: 22px; }
+    .secao-autor .autor-foto { margin: 0 auto; width: 170px; height: 170px; box-shadow: 7px 7px 0 var(--tinta); }
+    .linha-tempo { columns: 1; padding: 4px 22px 22px; }
+    .trajetoria summary { padding: 0 22px; }
+    .secao-autor .texto { margin-left: auto; margin-right: auto; }
+    .compra { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; text-align: center; justify-items: center; gap: 24px; }
+    .capa-compra { width: min(70vw, 260px); }
+    .carrossel { width: min(100%, 340px); }
+    .compra-info { width: 100%; min-width: 0; }
+    .frete-form input { padding: 0 16px; }
+    .btn-frete { padding: 0 18px; }
+    .capa-botoes { flex-direction: column; width: 100%; max-width: 320px; }
+    .capa-botoes > * { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .car-pista { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .js .revelar { opacity: 1; transform: none; }
+}
+
+/* "hidden" sempre esconde, mesmo em botões que têm display próprio */
+[hidden] { display: none !important; }
+
+/* ---------- CUPOM DE DESCONTO (verificado) ---------- */
+/* convite discreto abaixo do preço (quem ainda não respondeu o questionário) */
+.cupom-convite {
+    display: inline-block;
+    margin: -4px 0 14px;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--suave);
+    text-decoration: underline;
+    text-decoration-color: var(--amarelo-escuro);   /* sublinhado amarelo, bem sutil */
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+}
+.cupom-convite:hover { color: var(--tinta); }
+.cupom-convite:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 4px; }
+
+/* preço antigo riscado (aparece quando o cupom é aceito) */
+.preco-antigo {
+    margin-right: 6px;
+    font-size: 0.6em;
+    font-weight: 400;
+    color: var(--suave);
+    opacity: 0.75;
+}
+
+/* "sanfona" do cupom: fechada, é só uma linha pequena */
+.cupom-caixa { margin: 0 0 20px; }
+.cupom-caixa summary {
+    display: inline-block;
+    cursor: pointer;
+    list-style: none;                 /* tira o triângulo padrão */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--suave);
+    -webkit-tap-highlight-color: transparent;
+}
+.cupom-caixa summary::-webkit-details-marker { display: none; }
+.cupom-caixa summary::after { content: " +"; }
+.cupom-caixa[open] summary::after { content: " –"; }
+.cupom-caixa summary:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 4px; }
+
+.cupom-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+.cupom-form input {
+    min-width: 0; height: 48px; padding: 0 18px;
+    border: 1px solid #CFC7AA; border-radius: 999px; background: #ffffff;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--tinta);
+}
+#cupomCampo { grid-column: 1 / -1; text-transform: uppercase; letter-spacing: 0.08em; }
+.cupom-form input::placeholder { color: #9A927A; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.cupom-form input:focus { outline: none; border-color: var(--tinta); box-shadow: 0 0 0 4px var(--amarelo); }
+.cupom-form .btn-frete { height: 48px; }
+.cupom-msg { min-height: 1.2em; margin: 8px 4px 0; font-size: 0.85rem; color: var(--suave); }
+.cupom-msg.erro { color: #b03226; font-weight: 600; }
+.cupom-msg.ok { color: #1f6f3a; font-weight: 600; }
+
+/* aviso na volta do Mercado Pago */
+.pagamento-aviso {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    border: 2px dashed var(--tinta);
+    border-radius: 14px;
+    background: var(--cartao);
+    font-family: 'Lora', serif;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+.pagamento-aviso.erro { border-color: #b03226; color: #b03226; }
+
+/* ---------- DADOS PARA ENTREGA ---------- */
+.entrega { margin-top: 22px; }
+.entrega-titulo {
+    margin: 0 0 10px;
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.78rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+}
+/* grade de 2 colunas: campos "largos" ocupam a linha inteira, os curtos ficam lado a lado */
+.entrega-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.entrega-grade .larga { grid-column: 1 / -1; }
+.entrega-grade input {
+    min-width: 0; height: 48px; padding: 0 18px;
+    border: 1px solid #CFC7AA; border-radius: 999px; background: #ffffff;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--tinta);
+}
+.entrega-grade input[name="uf"] { text-transform: uppercase; }
+.entrega-grade input::placeholder { color: #9A927A; font-weight: 500; }
+.entrega-grade input:focus { outline: none; border-color: var(--tinta); box-shadow: 0 0 0 4px var(--amarelo); }
+.entrega-grade input[aria-invalid="true"] { border-color: #c0392b; }
+.entrega-lgpd { margin: 10px 4px 0; font-size: 0.78rem; color: var(--suave); }
+.entrega .btn-largo { margin-top: 12px; }
+.entrega .btn-pilula:disabled { opacity: 0.6; cursor: progress; }
+
+/* ---------- CHAMADAS DO CUPOM ---------- */
+/* botão da capa: contorno TRACEJADO (lembra um cupom de recortar) */
+.btn-cupom {
+    border-style: dashed;
+    line-height: 1.35;
+    padding: 14px 28px;
+    max-width: 100%;
+}
+@media (hover: hover) { .btn-cupom:hover .seta { transform: translateX(4px); } }
+
+/* cartão na parte de compra */
+.cupom-destaque {
+    position: relative;
+    margin: 0 0 18px;
+    padding: 16px 18px 14px;
+    border: 2px dashed var(--tinta);
+    border-radius: 18px;
+    background: #FFF4CC;
+}
+.cupom-etiqueta {
+    position: absolute; top: -13px; right: 16px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--tinta); color: var(--amarelo);
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; letter-spacing: 0.12em;
+}
+.cupom-destaque p { margin: 0 0 8px; font-family: 'Lora', serif; font-size: 0.98rem; line-height: 1.5; }
+.cupom-destaque-link {
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.78rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--tinta);
+    text-decoration: underline; text-decoration-color: var(--amarelo-escuro); text-underline-offset: 4px;
+}
+.cupom-destaque-link:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 4px; }
+
+/* aviso flutuante: canto inferior direito (PC) / acima da barra de compra (celular) */
+.aviso-cupom {
+    position: fixed; right: 20px; bottom: 20px; z-index: 950;
+    width: min(340px, calc(100vw - 24px));
+    padding: 18px 18px 16px;
+    border-radius: 20px;
+    background: var(--cartao);
+    border: 2px solid var(--tinta);
+    box-shadow: 0 14px 34px rgba(13, 13, 13, 0.25);
+    animation: aviso-entrar 0.45s ease-out;
+}
+.aviso-cupom p { margin: 0 26px 12px 0; font-family: 'Lora', serif; font-size: 0.98rem; line-height: 1.5; }
+.aviso-fechar {
+    position: absolute; top: 8px; right: 10px;
+    width: 36px; height: 36px; border: 0; border-radius: 50%;
+    background: transparent; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--tinta);
+}
+.aviso-fechar:hover { background: rgba(13, 13, 13, 0.08); }
+.aviso-fechar:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+.aviso-botao { width: 100%; min-height: 48px; padding: 0 20px; font-size: 0.78rem; }
+@keyframes aviso-entrar { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@media (max-width: 720px) {
+    .aviso-cupom { right: 12px; bottom: 88px; }   /* fica acima da barra preta de compra */
+}

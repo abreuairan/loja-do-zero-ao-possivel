@@ -1,0 +1,170 @@
+/* ============================================================
+   FINALIZAR COMPRA - visual das 3 etapas
+   (cores, botões e campos vêm do loja.css)
+   ============================================================ */
+
+.pagina-checkout { padding-bottom: 0 !important; background: var(--creme); }
+
+/* ---------- barra do topo ---------- */
+.ck-topo {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    min-height: 56px; padding: 0 20px;
+    background: var(--amarelo);
+    border-bottom: 3px solid var(--tinta);
+}
+.ck-voltar {
+    font-weight: 800; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--tinta); text-decoration: none;
+    padding: 10px 0;
+}
+.ck-voltar:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 6px; }
+@media (hover: hover) { .ck-voltar:hover span { display: inline-block; transform: translateX(-3px); } }
+.ck-marca { font-family: 'Lora', serif; font-weight: 700; font-size: 1rem; }
+
+/* ---------- miolo ---------- */
+.ck { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+.ck-titulo { margin: 0 0 18px; font-family: 'Lora', serif; font-size: clamp(1.7rem, 5vw, 2.4rem); }
+
+/* passos 1 → 2 → 3 */
+.ck-passos { display: flex; gap: 8px; margin: 0 0 26px; padding: 0; list-style: none; }
+.ck-passos li {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6); border: 1px solid var(--borda);
+    font-weight: 700; font-size: 0.78rem; color: var(--suave);
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+.ck-passos li span {
+    flex: 0 0 24px; height: 24px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 2px solid currentColor; font-size: 0.75rem;
+}
+.ck-passos li.atual { background: var(--tinta); color: var(--amarelo); border-color: var(--tinta); }
+.ck-passos li.feito { background: var(--amarelo); color: var(--tinta); border-color: var(--tinta); }
+
+.ck-grade { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
+
+/* ---------- etapas (cartões) ---------- */
+.ck-etapas { display: grid; gap: 14px; }
+.ck-etapa {
+    padding: 20px 22px;
+    background: var(--cartao); border: 1px solid var(--borda); border-radius: 24px;
+    scroll-margin-top: 76px;                       /* não some debaixo da barra do topo */
+    transition: box-shadow 0.25s ease, opacity 0.25s ease;
+}
+.ck-etapa:not(.aberta):not(.feita) { opacity: 0.55; }        /* etapas que ainda não chegaram */
+.ck-etapa.aberta { box-shadow: 6px 6px 0 #E0D9C0; border-color: var(--tinta); }
+.ck-etapa-topo { display: flex; align-items: center; gap: 12px; }
+.ck-etapa-topo h2 { flex: 1; margin: 0; font-size: 1rem; font-weight: 800; letter-spacing: 0.02em; }
+.ck-num {
+    flex: 0 0 32px; height: 32px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--amarelo); border: 2px solid var(--tinta);
+    font-weight: 800; font-size: 0.9rem;
+}
+.ck-etapa.feita .ck-num { background: var(--tinta); color: var(--amarelo); }
+.ck-editar {
+    padding: 8px 14px; border: 2px solid var(--tinta); border-radius: 999px;
+    background: transparent; color: var(--tinta);
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease;
+}
+.ck-editar:focus-visible { outline: 3px solid var(--tinta); outline-offset: 2px; }
+@media (hover: hover) { .ck-editar:hover { background: var(--tinta); color: var(--amarelo); } }
+.ck-etapa-resumo { margin: 10px 0 0 44px; font-family: 'Lora', serif; font-size: 0.95rem; line-height: 1.5; color: var(--suave); }
+.ck-corpo { margin-top: 16px; animation: subir 0.35s ease-out; }
+.ck-corpo .btn-largo { margin-top: 14px; }
+.ck-corpo .btn-pilula:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+.ck-corpo .frete-opcoes { margin-top: 10px; }
+
+/* ---------- formas de pagamento ---------- */
+.ck-formas { display: grid; gap: 10px; }
+.ck-forma {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    border: 1px solid #D8D0B4; border-radius: 18px; background: var(--cartao); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.12s ease;
+}
+.ck-forma:active { transform: scale(0.98); }
+.ck-forma:has(input:checked) { border-color: var(--tinta); background: #FFF0BC; }
+.ck-forma:has(input:focus-visible) { outline: 3px solid var(--amarelo); outline-offset: 2px; }
+.ck-forma input {
+    -webkit-appearance: none; appearance: none; flex: 0 0 20px; width: 20px; height: 20px; margin: 0;
+    border: 2px solid #8C8570; border-radius: 50%;
+}
+.ck-forma input:checked { border-color: var(--tinta); background: var(--tinta); box-shadow: inset 0 0 0 3.5px #FFF0BC; }
+.ck-forma-icone { display: flex; color: var(--tinta); }
+.ck-forma-texto strong { display: block; font-size: 0.95rem; }
+.ck-forma-texto small { display: block; margin-top: 2px; font-size: 0.78rem; color: var(--suave); line-height: 1.35; }
+@media (hover: hover) { .ck-forma:hover { border-color: var(--tinta); } }
+
+/* ---------- Pix ---------- */
+.ck-pix { margin-top: 6px; text-align: center; animation: subir 0.4s ease-out; }
+.ck-pix-titulo { margin: 0 0 10px; font-family: 'Lora', serif; font-weight: 700; font-size: 1.4rem; }
+.ck-pix-passos { margin: 0 auto 16px; padding-left: 20px; max-width: 420px; text-align: left; font-family: 'Lora', serif; font-size: 0.95rem; line-height: 1.6; }
+.ck-pix-qr {
+    display: block; width: 220px; height: 220px; margin: 0 auto 18px; padding: 10px;
+    background: #ffffff; border: 2px solid var(--tinta); border-radius: 18px;
+    image-rendering: pixelated;                       /* QR Code nítido */
+}
+.ck-pix-qr.expirado { opacity: 0.2; filter: grayscale(1); }
+.ck-pix .frete-rotulo { text-align: left; }
+.ck-pix-copiar { display: flex; gap: 8px; }
+.ck-pix-copiar input {
+    flex: 1; min-width: 0; height: 52px; padding: 0 18px;
+    border: 1px solid #CFC7AA; border-radius: 999px; background: #ffffff;
+    font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: var(--suave);
+    text-overflow: ellipsis;
+}
+.ck-pix-copiar input:focus { outline: none; border-color: var(--tinta); box-shadow: 0 0 0 4px var(--amarelo); }
+.ck-pix-espera { margin: 16px 0 0; font-size: 0.88rem; line-height: 1.5; color: var(--suave); text-align: center; }
+.ck-pontinho { display: inline-block; vertical-align: middle; margin-right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--amarelo-escuro); animation: piscar 1.2s ease-in-out infinite; }
+@keyframes piscar { 50% { opacity: 0.25; transform: scale(0.7); } }
+
+/* ---------- aprovado ---------- */
+.ck-sucesso { text-align: center; padding: 10px 0 4px; animation: subir 0.4s ease-out; outline: none; }
+.ck-sucesso p { font-family: 'Lora', serif; line-height: 1.6; }
+.ck-sucesso-icone {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 64px; height: 64px; margin-bottom: 8px; border-radius: 50%;
+    background: var(--amarelo); border: 3px solid var(--tinta);
+    font-size: 1.8rem; font-weight: 800;
+}
+
+/* ---------- resumo do pedido ---------- */
+.ck-resumo {
+    position: sticky; top: 76px;
+    padding: 20px 22px;
+    background: var(--cartao); border: 1px solid var(--borda); border-radius: 24px;
+    box-shadow: 6px 6px 0 #E0D9C0;
+}
+.ck-resumo-titulo { margin: 0 0 12px; font-weight: 800; font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.ck-item { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; }
+.ck-item img { width: 56px; height: 70px; object-fit: cover; border-radius: 10px; }
+.ck-item p { flex: 1; margin: 0; }
+.ck-item strong { display: block; font-family: 'Lora', serif; font-size: 0.98rem; }
+.ck-item small { display: block; margin-top: 2px; font-size: 0.78rem; color: var(--suave); }
+.ck-item span { font-weight: 800; white-space: nowrap; }
+.ck-resumo .frete-total { margin: 0; }
+
+/* sacola vazia */
+.ck-vazio { padding: 40px 20px; text-align: center; }
+.ck-vazio p { font-family: 'Lora', serif; font-size: 1.2rem; }
+
+/* ---------- celular ---------- */
+@media (max-width: 820px) {
+    .ck { padding: 22px 16px 48px; }
+    .ck-grade { grid-template-columns: minmax(0, 1fr); }
+    .ck-resumo { position: static; order: -1; }      /* resumo em cima no celular */
+    .ck-passos li { justify-content: center; padding: 10px 6px; font-size: 0; gap: 0; }   /* só os números */
+    .ck-passos li.atual { font-size: 0.72rem; gap: 6px; flex: 2.4; }                     /* e o nome do passo atual */
+    .ck-etapa { padding: 18px 16px; }
+    .ck-etapa-resumo { margin-left: 0; }
+    .ck-marca { display: none; }
+    .so-pc { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ck-pontinho { animation: none; }
+}
